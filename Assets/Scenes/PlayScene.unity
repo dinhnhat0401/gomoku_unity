@@ -169,6 +169,7 @@ GameObject:
   - 212: {fileID: 1423599095}
   - 114: {fileID: 1423599094}
   - 114: {fileID: 1423599097}
+  - 114: {fileID: 1423599098}
   m_Layer: 0
   m_Name: GameBoard
   m_TagString: game_board
@@ -237,6 +238,20 @@ MonoBehaviour:
   _gameBoard: {fileID: 1423599094}
   gameState: 0
   prefab: {fileID: 100000, guid: a9db859c772be4cf9970f83c9df639a9, type: 2}
+--- !u!114 &1423599098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1423599093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adc238239512846e4a3819d19b0a5897, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  white_block: {fileID: 21300000, guid: 1b7c30277ccf449a18fa453e347ecbf1, type: 3}
+  black_block: {fileID: 21300000, guid: 350f53f193cb54b09be1c0fa85b45989, type: 3}
+  gameBoardGO: {fileID: 1423599094}
 --- !u!1 &1752537772
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,6 +353,14 @@ Prefab:
     - target: {fileID: 400000, guid: 730e4f94f9fa44d01ae641285df3cdcf, type: 2}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 730e4f94f9fa44d01ae641285df3cdcf, type: 2}
+      propertyPath: _gridWidth
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 730e4f94f9fa44d01ae641285df3cdcf, type: 2}
+      propertyPath: _gridHeight
+      value: 14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 730e4f94f9fa44d01ae641285df3cdcf, type: 2}

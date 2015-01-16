@@ -33,7 +33,6 @@ public class GomokuGameLogic : MonoBehaviour
 								go.tag = "blank_block";
 						}
 				}
-
 		}
 
 		int countBlockInDirection (Point start, CellState color, int dx, int dy)
@@ -48,17 +47,19 @@ public class GomokuGameLogic : MonoBehaviour
 						}
 						currentPoint = new Point (currentPoint.x + dx, currentPoint.y + dy);
 				}
-				return result;
+//		Debug.Log("===================================== " + result);
+
+			return result;
 		}
 
 		int countBlockAtPosition (Point location, CellState color)
 		{
 				int result = -1;
 				int[] counts = new int[4];
-				counts [0] = countBlockInDirection (location, color, -1, 0) + countBlockInDirection (location, color, 1, 0);
-				counts [1] = countBlockInDirection (location, color, 0, -1) + countBlockInDirection (location, color, 0, 1);
-				counts [2] = countBlockInDirection (location, color, -1, 1) + countBlockInDirection (location, color, 1, -1);
-				counts [3] = countBlockInDirection (location, color, -1, -1) + countBlockInDirection (location, color, 1, 1);
+				counts [0] = countBlockInDirection (location, color, -1, 0) + countBlockInDirection (location, color, 1, 0) - 1;
+				counts [1] = countBlockInDirection (location, color, 0, -1) + countBlockInDirection (location, color, 0, 1) - 1;
+				counts [2] = countBlockInDirection (location, color, -1, 1) + countBlockInDirection (location, color, 1, -1) - 1;
+				counts [3] = countBlockInDirection (location, color, -1, -1) + countBlockInDirection (location, color, 1, 1) - 1;
 
 				for (int t = 0; t < 4; t++) {
 						result = Mathf.Max (result, counts [t]);
@@ -68,7 +69,9 @@ public class GomokuGameLogic : MonoBehaviour
 
 		public bool HavingVictoryAtPosition (Point location, CellState color)
 		{
-				if (_gameBoard.getBlock (location) == color && countBlockAtPosition (location, color) >= winPoint) {
+				int result = countBlockAtPosition (location, color);
+		Debug.Log(result+ "=======");
+				if ((_gameBoard.getBlock (location) == color) && (result >= winPoint)) {
 						switch (color) {
 						case CellState.White:
 								{

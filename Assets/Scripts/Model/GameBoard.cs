@@ -3,9 +3,9 @@ using System.Collections;
 	
 public class GameBoard:MonoBehaviour
 {
-	public int _gridWidth = 15;
+	private int _gridWidth = 15;
 	//the grid number of cell horizontally
-	public int _gridHeight = 15;
+	private int _gridHeight = 15;
 	//the grid number of cell vertically
 	
 	public CellState[,] arrayOfBlocks;
@@ -37,6 +37,7 @@ public class GameBoard:MonoBehaviour
 		if (isOutOfBound(x, y)) {
 			return CellState.None;
 		} else {
+			Debug.Log(arrayOfBlocks[x, y] + "clgt");
 			return arrayOfBlocks[x, y];
 		}
 	}
@@ -47,6 +48,6 @@ public class GameBoard:MonoBehaviour
 	}
 
 	public bool isOutOfBound (int x, int y) {
-		return x < 0 || y < 0 || x > _gridWidth || y > _gridHeight;
+		return x < 0 || y < 0 || x >= _gridWidth || y >= _gridHeight;
 	}
 }
