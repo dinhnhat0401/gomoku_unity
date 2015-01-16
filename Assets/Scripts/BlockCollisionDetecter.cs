@@ -2,8 +2,8 @@
 using System.Collections;
 
 public class BlockCollisionDetecter : MonoBehaviour {
-	public Transform white_block;
-	public Transform black_block;
+	public Sprite white_block;
+	public Sprite black_block;
 	public GameObject gameBoard;
 
 	private GameBoardScript gameBoardScript;
@@ -22,8 +22,8 @@ public class BlockCollisionDetecter : MonoBehaviour {
 				RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 				if(hit.collider != null)
 				{
-//					Debug.Log("object clicked: "+hit.collider.tag);
-					onTouchChange();
+					Debug.Log("object clicked: "+hit.collider.tag);
+					onTouchChange(hit.collider.gameObject);
 				}
 			}
 		}
@@ -51,7 +51,7 @@ public class BlockCollisionDetecter : MonoBehaviour {
 #endif
 	}
 
-	void onTouchChange () {
+	void onTouchChange (GameObject clickedGO) {
 		this.tag = "black_block";
 		if (gameBoard == null) {
 			gameBoard = GameObject.FindGameObjectWithTag("game_board");
@@ -59,18 +59,19 @@ public class BlockCollisionDetecter : MonoBehaviour {
 		if (gameBoard == null) {
 			Debug.Log("CANNOT FIND OBJECT WITH TAG GAME_BOARD");
 		} else {
-			int game_state = -1;
-			game_state = gameBoard.GetComponent<GameBoardScript>().gameState;
+			GameConstants.GameState game_state = gameBoard.GetComponent<GameBoardScript>().gameState;
 			Debug.Log(game_state);
 			switch (game_state) 
 			{
-				case GameConstants.GAME_STATE_BEGIN:
-				case GameConstants.GAME_STATE_WHITE_MOVE: 
+				case GameConstants.GameState.Begin:
+				case GameConstants.GameState.White_move: 
 				{
+					clickedGO.GetComponent<SpriteRenderer>().sprite = white_block;
 					break;
 				}
-				case GameConstants.GAME_STATE_BLACK_MOVE:
+				case GameConstants.GameState.Black_move:
 				{
+					clickedGO.GetComponent<SpriteRenderer>().sprite = black_block;
 					break;
 				}
 				default: 

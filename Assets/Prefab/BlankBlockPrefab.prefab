@@ -52,8 +52,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adc238239512846e4a3819d19b0a5897, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  white_block: {fileID: 0}
-  black_block: {fileID: 0}
+  white_block: {fileID: 21300000, guid: 1b7c30277ccf449a18fa453e347ecbf1, type: 3}
+  black_block: {fileID: 21300000, guid: 350f53f193cb54b09be1c0fa85b45989, type: 3}
   gameBoard: {fileID: 0}
 --- !u!212 &21200000
 SpriteRenderer:
