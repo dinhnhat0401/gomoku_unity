@@ -41,9 +41,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameState: 0
-  _gridWidth: 15
-  _gridHeight: 15
-  prefab: {fileID: 100000, guid: a9db859c772be4cf9970f83c9df639a9, type: 2}
+  _gridWidth: 0
+  _gridHeight: 0
+  prefab: {fileID: 0}
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

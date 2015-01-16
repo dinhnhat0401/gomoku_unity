@@ -11,6 +11,7 @@ GameObject:
   - 212: {fileID: 21200000}
   - 61: {fileID: 6100000}
   - 114: {fileID: 11400000}
+  - 114: {fileID: 11400002}
   m_Layer: 0
   m_Name: BlankBlockPrefab
   m_TagString: blank_block
@@ -54,7 +55,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   white_block: {fileID: 21300000, guid: 1b7c30277ccf449a18fa453e347ecbf1, type: 3}
   black_block: {fileID: 21300000, guid: 350f53f193cb54b09be1c0fa85b45989, type: 3}
-  gameBoard: {fileID: 0}
+  gameBoardGO: {fileID: 0}
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f328f9a2734e94f54a39c50b6468c740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1
