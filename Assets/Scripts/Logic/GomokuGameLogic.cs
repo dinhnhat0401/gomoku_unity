@@ -20,6 +20,8 @@ public class GomokuGameLogic : MonoBehaviour
 		public GameObject prefab;
 		public GameObject gomokuAIPrefab;
 		public GameObject[,] arrayObjects;
+		public GameObject recentMoveWhite;
+		public GameObject recentMoveBlack;
 
 		// Use this for initialization
 		public GomokuGameLogic ()
@@ -53,7 +55,8 @@ public class GomokuGameLogic : MonoBehaviour
 					clickedGO.tag = "black_block";	
 					clickedGO.GetComponent<SpriteRenderer> ().sprite = black_block;
 					_gameBoard.pushBlock (pos, CellState.Black);
-
+					recentMoveBlack.transform.position = clickedGO.transform.position;
+					
 					if (HavingVictoryAtPosition (pos, CellState.Black)) {
 						gameState = GameState.end;
 					} else {
@@ -65,7 +68,8 @@ public class GomokuGameLogic : MonoBehaviour
 					clickedGO.tag = "white_block";
 					clickedGO.GetComponent<SpriteRenderer> ().sprite = white_block;
 					_gameBoard.pushBlock (pos, CellState.White);
-
+					recentMoveWhite.transform.position = clickedGO.transform.position;
+			
 					if (HavingVictoryAtPosition (pos, CellState.White)) {
 						gameState = GameState.end;
 					} else {
