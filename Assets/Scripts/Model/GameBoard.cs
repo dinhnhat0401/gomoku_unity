@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 	
 public class GameBoard:MonoBehaviour
 {
@@ -16,9 +17,25 @@ public class GameBoard:MonoBehaviour
 
 		for (int i = 0; i < _gridWidth; i++) {
 			for (int j = 0; j < _gridHeight; j++) {
-				pushBlock (new Point(i, j), CellState.None);
+				arrayOfBlocks[i, j] = CellState.None;
 			}
 		}
+	}
+
+	public IEnumerable<Point> EnumerateCells() 
+	{
+		for (int y = 0; y < _gridHeight; y ++) 
+		{
+			for (int x = 0; x < _gridWidth; x ++) 
+			{
+				yield return new Point(x, y);
+			}
+		}
+	}
+
+	public int getSize () 
+	{
+		return _gridWidth;
 	}
 
 	public void pushBlock (Point p, CellState color) {
@@ -37,7 +54,6 @@ public class GameBoard:MonoBehaviour
 		if (isOutOfBound(x, y)) {
 			return CellState.None;
 		} else {
-			Debug.Log(arrayOfBlocks[x, y] + "clgt");
 			return arrayOfBlocks[x, y];
 		}
 	}

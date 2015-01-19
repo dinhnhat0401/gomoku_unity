@@ -3,10 +3,12 @@ using System.Collections;
 
 public class GomokuGameLogic : MonoBehaviour
 {
+		public bool fightWithAI = true;
+		public Sprite white_block;
+		public Sprite black_block;	
 
 		public GameBoard _gameBoard;
 		public GameState gameState;
-		private int winPoint = 5;
 
 		//the grid number of cell horizontally
 		private int _gridWidth = 15;
@@ -15,7 +17,9 @@ public class GomokuGameLogic : MonoBehaviour
 		private int _gridHeight = 15;
 
 		// blank_block prefab 
-		public GameObject prefab; 	
+		public GameObject prefab;
+		public GameObject gomokuAIPrefab;
+		public GameObject[,] arrayObjects;
 
 		// Use this for initialization
 		public GomokuGameLogic ()
@@ -25,13 +29,65 @@ public class GomokuGameLogic : MonoBehaviour
 
 		void Start ()
 		{
+				arrayObjects = new GameObject[_gridWidth, _gridHeight];
 				gameState = GameState.Begin;
 				for (int i = 0; i< _gridWidth; i++) {
 						for (int j = 0; j < _gridHeight; j++) {
 								GameObject go = GameObject.Instantiate (prefab, new Vector3 ((i - 7) * 0.835f, (j - 7) * 0.835f, 0), transform.rotation) as GameObject;
 								go.GetComponent<BlockPosition> ().position = new Point (i, j);
 								go.tag = "blank_block";
+								arrayObjects [i, j] = go;
 						}
+				}
+
+				GameObject gomokuAI = GameObject.Instantiate (gomokuAIPrefab, new Vector3 (0, 0, 0), transform.rotation) as GameObject;
+
+		}
+
+		public void changeBlockSpriteAtLocation (GameObject clickedGO, Point pos)
+		{
+			switch (gameState) 
+			{
+				case GameState.Begin:
+				case GameState.Black_move:
+					clickedGO.tag = "black_block";	
+					clickedGO.GetComponent<SpriteRenderer> ().sprite = black_block;
+					_gameBoard.pushBlock (pos, CellState.Black);
+
+					if (HavingVictoryAtPosition (pos, CellState.Black)) {
+						gameState = GameState.end;
+					} else {
+						gameState = GameState.White_move;
+					}	
+					break;
+				
+				case GameState.White_move: 	
+					clickedGO.tag = "white_block";
+					clickedGO.GetComponent<SpriteRenderer> ().sprite = white_block;
+					_gameBoard.pushBlock (pos, CellState.White);
+
+					if (HavingVictoryAtPosition (pos, CellState.White)) {
+						gameState = GameState.end;
+					} else {
+						gameState = GameState.Black_move;
+					}	
+					break;
+				
+				case GameState.end:
+				default: 
+				break;
+			}
+		}
+
+		public CellState getOpponentColor (CellState currentColor)
+		{
+				switch (currentColor) {
+				case CellState.Black:
+						return CellState.White;
+				case CellState.White:
+						return CellState.Black;
+				default:
+						return CellState.None;
 				}
 		}
 
@@ -47,12 +103,10 @@ public class GomokuGameLogic : MonoBehaviour
 						}
 						currentPoint = new Point (currentPoint.x + dx, currentPoint.y + dy);
 				}
-//		Debug.Log("===================================== " + result);
-
-			return result;
+				return result;
 		}
 
-		int countBlockAtPosition (Point location, CellState color)
+		public int countBlockAtPosition (Point location, CellState color)
 		{
 				int result = -1;
 				int[] counts = new int[4];
@@ -70,8 +124,8 @@ public class GomokuGameLogic : MonoBehaviour
 		public bool HavingVictoryAtPosition (Point location, CellState color)
 		{
 				int result = countBlockAtPosition (location, color);
-		Debug.Log(result+ "=======");
-				if ((_gameBoard.getBlock (location) == color) && (result >= winPoint)) {
+				Debug.Log (result + "=======");
+				if ((_gameBoard.getBlock (location) == color) && (result >= GameConstants.GAME_WIN_POINT)) {
 						switch (color) {
 						case CellState.White:
 								{

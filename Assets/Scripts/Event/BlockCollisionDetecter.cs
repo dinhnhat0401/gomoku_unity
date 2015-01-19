@@ -3,15 +3,17 @@ using System.Collections;
 
 public class BlockCollisionDetecter : MonoBehaviour
 {
-		public Sprite white_block;
-		public Sprite black_block;
-		public GameBoard gameBoardGO;
+	public GameBoard gameBoardGO;
 
+	private GomokuGameLogic gameLogic;
 		// Use this for initialization
-		void Start ()
+	void Start ()
+	{
+		if (gameLogic == null)
 		{
-		
+			gameLogic = gameBoardGO.GetComponent<GomokuGameLogic>();
 		}
+	}
 	
 		// Update is called once per frame
 		void Update ()
@@ -19,14 +21,18 @@ public class BlockCollisionDetecter : MonoBehaviour
 #if UNITY_EDITOR
 		if (Input.GetMouseButtonDown(0))
 		{
-			Debug.Log("chay bao nhieu lan day ");
+//			Debug.Log("chay bao nhieu lan day ");
 			RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
 			if(hit.collider != null)
 			{
 				if (hit.collider.gameObject != null && hit.collider.gameObject.tag == "blank_block") 
 				{
-					//					Debug.Log("object clicked: "+Camera.main.ScreenToWorldPoint(Input.mousePosition));
-					onTouchChange(hit.collider.gameObject);
+					bool fightWithAI = gameLogic.fightWithAI;
+					if (!fightWithAI || (fightWithAI && gameLogic.gameState == GameState.White_move)) 
+					{
+						onTouchChange(hit.collider.gameObject);
+					}
 				}
 			}
 		}
@@ -39,11 +45,19 @@ public class BlockCollisionDetecter : MonoBehaviour
 										Touch touch = Input.GetTouch (i);
 					
 										if (touch.phase == TouchPhase.Began) {
-												RaycastHit2D hit = Physics2D.Raycast (Camera.main.ScreenToWorldPoint (touch.position), Vector2.zero);
+											RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 						
-												if (hit.collider != null) {
-														Debug.Log ("object clicked: " + hit.collider.tag);
+											if(hit.collider != null)
+											{
+												if (hit.collider.gameObject != null && hit.collider.gameObject.tag == "blank_block") 
+												{
+													bool fightWithAI = gameLogic.fightWithAI;
+													if (!fightWithAI || (fightWithAI && gameLogic.gameState == GameState.White_move)) 
+													{
+														onTouchChange(hit.collider.gameObject);
+													}
 												}
+											}
 										}
 					
 								}
@@ -57,35 +71,19 @@ public class BlockCollisionDetecter : MonoBehaviour
 				if (gameBoardGO == null) {
 						Debug.Log ("CANNOT FIND OBJECT WITH TAG GAME_BOARD");
 				} else {
-						GomokuGameLogic gameLogic = gameBoardGO.GetComponent<GomokuGameLogic> ();
 						GameState game_state = gameLogic.gameState;
 						switch (game_state) {
-						case GameState.Begin:
 						case GameState.White_move: 
 								{
-										clickedGO.tag = "white_block";
-										clickedGO.GetComponent<SpriteRenderer> ().sprite = white_block;
 										Point pos = clickedGO.GetComponent<BlockPosition> ().position;
-										gameBoardGO.pushBlock (pos, CellState.White);
-										Debug.Log ("=====" + pos.x + "asdfasfsdf " + pos.y);
-										if (gameLogic.HavingVictoryAtPosition (pos, CellState.White)) {
-												gameLogic.gameState = GameState.end;
-										} else {
-												gameLogic.gameState = GameState.Black_move;
-										}	
+										gameLogic.changeBlockSpriteAtLocation(clickedGO, pos);
 										break;
 								}
+						case GameState.Begin:
 						case GameState.Black_move:
 								{
-										clickedGO.tag = "black_block";	
-										clickedGO.GetComponent<SpriteRenderer> ().sprite = black_block;
 										Point pos = clickedGO.GetComponent<BlockPosition> ().position;
-										gameBoardGO.pushBlock (pos, CellState.Black);
-										if (gameLogic.HavingVictoryAtPosition (pos, CellState.Black)) {
-												gameLogic.gameState = GameState.end;
-										} else {
-												gameLogic.gameState = GameState.White_move;
-										}	
+										gameLogic.changeBlockSpriteAtLocation(clickedGO, pos);
 										break;
 								}
 						default: 
