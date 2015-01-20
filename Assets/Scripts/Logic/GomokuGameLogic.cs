@@ -25,6 +25,9 @@ public class GomokuGameLogic : MonoBehaviour
 	public GameObject recentMoveWhite;
 	public GameObject recentMoveBlack;
 
+	public GameObject victoryPopup;
+	public GameObject defeatedPopup;
+
 		// Use this for initialization
 		public GomokuGameLogic ()
 		{
@@ -136,8 +139,12 @@ public class GomokuGameLogic : MonoBehaviour
 	public bool HavingVictoryAtPosition (Point location, CellState color)
 	{
 		int result = countBlockAtPosition (location, color);
-		Debug.Log (result + "=======");
 		if ((_gameBoard.getBlock (location) == color) && (result >= GameConstants.GAME_WIN_POINT)) {
+			if (color == GameConstants.userBlockColor) {
+				StartCoroutine("playVictoryAnimation");
+			} else {
+				StartCoroutine("playDefeatedAnimation");
+			}
 			switch (color) {
 				case CellState.White:
 				{
@@ -181,5 +188,17 @@ public class GomokuGameLogic : MonoBehaviour
 		} else {
 			// p v p
 		}
+	}
+
+	public IEnumerator playVictoryAnimation() {
+		victoryPopup.SetActive(true);
+		yield return new WaitForSeconds(2);
+		victoryPopup.SetActive(false);
+	}
+
+	public IEnumerator playDefeatedAnimation() {
+		defeatedPopup.SetActive(true);
+		yield return new WaitForSeconds(2);
+		defeatedPopup.SetActive(false);
 	}
 }

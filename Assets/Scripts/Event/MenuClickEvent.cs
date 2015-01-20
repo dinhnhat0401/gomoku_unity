@@ -19,11 +19,13 @@ public class MenuClickEvent : MonoBehaviour {
 	public void playWithAI() {
 		Application.LoadLevel ("PlayScene"); 
 		GameConstants.aiMode = true;
+		GameConstants.userBlockColor = CellState.White;
 	}
 
 	public void playWithHuman() {
 		Application.LoadLevel ("PlayScene");
 		GameConstants.aiMode = false;
+		GameConstants.userBlockColor = CellState.White;
 	}
 
 	public void backToMenu() {
