@@ -12,6 +12,7 @@ public class GomokuAI: MonoBehaviour {
 	private GameObject[,] arrayObjects;
 	private GameObject gameBoardGO;
 	private GameBoard gameBoard;
+	private bool delayWait = false;
 
 	delegate IComparable EstimateFunction(Point location, CellState color);
 
@@ -27,19 +28,39 @@ public class GomokuAI: MonoBehaviour {
 			gameLogic = gameBoardGO.GetComponent<GomokuGameLogic> ();
 		}
 
-		arrayObjects = gameLogic.arrayObjects;
-		GameObject clickedGO = arrayObjects[7, 7];
-
-		Point pos = clickedGO.GetComponent<BlockPosition> ().position;
-		gameLogic.changeBlockSpriteAtLocation(clickedGO, pos);
+		if (gameLogic.fightWithAI) 
+		{
+			arrayObjects = gameLogic.arrayObjects;
+			GameObject clickedGO = arrayObjects[7, 7];
+			
+			Point pos = clickedGO.GetComponent<BlockPosition> ().position;
+			gameLogic.changeBlockSpriteAtLocation(clickedGO, pos);
+		}
 	}
 	
 	void Update () {
 
-		if(gameLogic.gameState == GameState.Black_move) {
-			Point bestPos = SelectBestPosition(CellState.Black);
-			gameLogic.changeBlockSpriteAtLocation(arrayObjects[bestPos.x, bestPos.y], bestPos);
+		if(gameLogic.fightWithAI && (gameLogic.gameState == GameState.Black_move) && !delayWait) {
+			StartCoroutine("AIThinkingDelay");
+
 		}
+	}
+
+	IEnumerator AIThinkingDelay()
+	{
+		delayWait = true;
+		yield return new WaitForSeconds(1);
+		Point bestPos = SelectBestPosition(CellState.Black);
+		gameLogic.changeBlockSpriteAtLocation(arrayObjects[bestPos.x, bestPos.y], bestPos);
+		delayWait = false;
+	}
+
+	public void RestartGame() {
+		arrayObjects = gameLogic.arrayObjects;
+		GameObject clickedGO = arrayObjects[7, 7];
+		
+		Point pos = clickedGO.GetComponent<BlockPosition> ().position;
+		gameLogic.changeBlockSpriteAtLocation(clickedGO, pos);
 	}
 
 	public Point SelectBestPosition(CellState color) 
