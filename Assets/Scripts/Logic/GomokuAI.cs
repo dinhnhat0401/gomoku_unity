@@ -28,16 +28,19 @@ public class GomokuAI: MonoBehaviour {
 			gameLogic = gameBoardGO.GetComponent<GomokuGameLogic> ();
 		}
 
-		arrayObjects = gameLogic.arrayObjects;
-		GameObject clickedGO = arrayObjects[7, 7];
-
-		Point pos = clickedGO.GetComponent<BlockPosition> ().position;
-		gameLogic.changeBlockSpriteAtLocation(clickedGO, pos);
+		if (gameLogic.fightWithAI) 
+		{
+			arrayObjects = gameLogic.arrayObjects;
+			GameObject clickedGO = arrayObjects[7, 7];
+			
+			Point pos = clickedGO.GetComponent<BlockPosition> ().position;
+			gameLogic.changeBlockSpriteAtLocation(clickedGO, pos);
+		}
 	}
 	
 	void Update () {
 
-		if(gameLogic.gameState == GameState.Black_move && !delayWait) {
+		if(gameLogic.fightWithAI && (gameLogic.gameState == GameState.Black_move) && !delayWait) {
 			StartCoroutine("AIThinkingDelay");
 
 		}

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class GomokuGameLogic : MonoBehaviour
 {
-	public bool fightWithAI = true;
+	public bool fightWithAI;
 	public Sprite white_block;
 	public Sprite black_block;	
 	public Sprite blank_block;
@@ -33,6 +33,7 @@ public class GomokuGameLogic : MonoBehaviour
 
 		void Start ()
 		{
+			fightWithAI = GameConstants.aiMode;
 				arrayObjects = new GameObject[_gridWidth, _gridHeight];
 				gameState = GameState.Begin;
 				for (int i = 0; i< _gridWidth; i++) {
