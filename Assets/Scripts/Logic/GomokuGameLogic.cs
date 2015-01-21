@@ -192,13 +192,13 @@ public class GomokuGameLogic : MonoBehaviour
 
 	public IEnumerator playVictoryAnimation() {
 		victoryPopup.SetActive(true);
-		yield return new WaitForSeconds(2);
+		yield return new WaitForSeconds(3.5f);
 		victoryPopup.SetActive(false);
 	}
 
 	public IEnumerator playDefeatedAnimation() {
 		defeatedPopup.SetActive(true);
-		yield return new WaitForSeconds(2);
+		yield return new WaitForSeconds(3.5f);
 		defeatedPopup.SetActive(false);
 	}
 }
