@@ -46,6 +46,14 @@ public class GameBoard:MonoBehaviour
 		arrayOfBlocks[x, y] = color;
 	}
 
+	public void removeBlock (Point pos) {
+		removeBlock(pos.x, pos.y);
+	}
+
+	public void removeBlock (int x, int y) {
+		arrayOfBlocks[x, y] = CellState.None;
+	}
+
 	public CellState getBlock (Point p) {
 		return getBlock (p.x, p.y);
 	}
