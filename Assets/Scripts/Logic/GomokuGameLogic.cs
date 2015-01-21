@@ -17,6 +17,8 @@ public class GomokuGameLogic : MonoBehaviour
 	//the grid number of cell vertically
 	private int _gridHeight = 15;
 	private GomokuAI gomokuAI;
+	private Stack moveObjectStack;
+	private Stack movePositionStack;
 
 	// blank_block prefab 
 	public GameObject prefab;
@@ -50,48 +52,54 @@ public class GomokuGameLogic : MonoBehaviour
 
 			GameObject gomokuAIGO = GameObject.Instantiate (gomokuAIPrefab, new Vector3 (0, 0, 0), transform.rotation) as GameObject;
 			gomokuAI = gomokuAIGO.GetComponent<GomokuAI>();
+			moveObjectStack = new Stack();
+			movePositionStack = new Stack();
 		}
 
 	public void changeBlockSpriteAtLocation (GameObject clickedGO, Point pos)
 	{
 		switch (gameState) 
-		{
-			case GameState.Begin:
-			case GameState.Black_move:
-				clickedGO.tag = "black_block";	
-				clickedGO.GetComponent<SpriteRenderer> ().sprite = black_block;
-				_gameBoard.pushBlock (pos, CellState.Black);
-				recentMoveBlack.transform.position = clickedGO.transform.position;
+		{  
+		case GameState.Begin:
+		case GameState.Black_move:
+			moveObjectStack.Push(clickedGO);
+			movePositionStack.Push(pos);
+			clickedGO.tag = "black_block";	
+			clickedGO.GetComponent<SpriteRenderer> ().sprite = black_block;
+			_gameBoard.pushBlock (pos, CellState.Black);
+			recentMoveBlack.transform.position = clickedGO.transform.position;
 					
-				if (HavingVictoryAtPosition (pos, CellState.Black)) {
-					gameState = GameState.end;
-				} else {
-					gameState = GameState.White_move;
-				}	
-				break;
+			if (HavingVictoryAtPosition (pos, CellState.Black)) {
+				gameState = GameState.End;
+			} else {
+				gameState = GameState.White_move;
+			}	
+			break;
 				
-			case GameState.White_move: 	
-				clickedGO.tag = "white_block";
-				clickedGO.GetComponent<SpriteRenderer> ().sprite = white_block;
-				_gameBoard.pushBlock (pos, CellState.White);
-				recentMoveWhite.transform.position = clickedGO.transform.position;
+		case GameState.White_move: 	
+			moveObjectStack.Push(clickedGO);
+			movePositionStack.Push(pos);
+			clickedGO.tag = "white_block";
+			clickedGO.GetComponent<SpriteRenderer> ().sprite = white_block;
+			_gameBoard.pushBlock (pos, CellState.White);
+			recentMoveWhite.transform.position = clickedGO.transform.position;
 			
-				if (HavingVictoryAtPosition (pos, CellState.White)) {
-					gameState = GameState.end;
-				} else {
-					gameState = GameState.Black_move;
-				}	
-				break;
+			if (HavingVictoryAtPosition (pos, CellState.White)) {
+				gameState = GameState.End;
+			} else {
+				gameState = GameState.Black_move;
+			}	
+			break;
 				
-			case GameState.Restart:
-				clickedGO.tag = "blank_block";
-				clickedGO.GetComponent<SpriteRenderer> ().sprite = blank_block;
-				_gameBoard.pushBlock (pos, CellState.None);
-				break;
+		case GameState.Restart:
+			clickedGO.tag = "blank_block";
+			clickedGO.GetComponent<SpriteRenderer> ().sprite = blank_block;
+			_gameBoard.pushBlock (pos, CellState.None);
+			break;
 
-			case GameState.end:
-			default: 
-				break;
+		case GameState.End:
+		default: 
+			break;
 		}
 	}
 
@@ -162,7 +170,7 @@ public class GomokuGameLogic : MonoBehaviour
 					break;
 				}
 			}
-			gameState = GameState.end;
+			gameState = GameState.End;
 			return true;
 		}
 		return false;
@@ -172,6 +180,9 @@ public class GomokuGameLogic : MonoBehaviour
 	{
 		recentMoveWhite.transform.position = new Vector3(int.MaxValue, 0, 0);
 		recentMoveBlack.transform.position = new Vector3(int.MaxValue, 0, 0);
+
+		moveObjectStack.Clear();
+		movePositionStack.Clear();
 
 		gameState = GameState.Restart;
 		for (int i = 0; i< _gridWidth; i++) {
@@ -200,5 +211,57 @@ public class GomokuGameLogic : MonoBehaviour
 		defeatedPopup.SetActive(true);
 		yield return new WaitForSeconds(3.5f);
 		defeatedPopup.SetActive(false);
+	}
+
+	public void undoMove() {
+		if (GameConstants.userBlockColor == CellState.Black) {
+			if (gameState == GameState.Black_move) {
+				if (moveObjectStack.Count >= 4) {
+					GameObject pop1 = moveObjectStack.Pop() as GameObject;
+					Point pos1 = (Point)movePositionStack.Pop();
+					pop1.tag = "blank_block";	
+					pop1.GetComponent<SpriteRenderer> ().sprite = blank_block;
+					_gameBoard.removeBlock (pos1);
+					
+					GameObject pop2 = moveObjectStack.Pop() as GameObject;
+					Point pos2 = (Point)movePositionStack.Pop();
+					pop2.tag = "blank_block";	
+					pop2.GetComponent<SpriteRenderer> ().sprite = blank_block;
+					_gameBoard.removeBlock (pos2);
+
+					GameObject pop3 = moveObjectStack.Pop() as GameObject;
+					recentMoveWhite.transform.position = pop3.transform.position;
+
+					GameObject pop4 = moveObjectStack.Peek() as GameObject;
+					recentMoveBlack.transform.position = pop4.transform.position;
+
+					moveObjectStack.Push(pop3);
+				}
+			}
+		} else {
+			if (gameState == GameState.White_move) {
+				if (moveObjectStack.Count >= 4) {
+					GameObject pop1 = moveObjectStack.Pop() as GameObject;
+					Point pos1 = (Point)movePositionStack.Pop();
+					pop1.tag = "blank_block";	
+					pop1.GetComponent<SpriteRenderer> ().sprite = blank_block;
+					_gameBoard.removeBlock (pos1);
+					
+					GameObject pop2 = moveObjectStack.Pop() as GameObject;
+					Point pos2 = (Point)movePositionStack.Pop();
+					pop2.tag = "blank_block";	
+					pop2.GetComponent<SpriteRenderer> ().sprite = blank_block;
+					_gameBoard.removeBlock (pos2);
+					
+					GameObject pop3 = moveObjectStack.Pop() as GameObject;
+					recentMoveWhite.transform.position = pop3.transform.position;
+					
+					GameObject pop4 = moveObjectStack.Peek() as GameObject;
+					recentMoveBlack.transform.position = pop4.transform.position;
+
+					moveObjectStack.Push(pop3);
+				}
+			}
+		}
 	}
 }
