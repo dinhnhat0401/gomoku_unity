@@ -6,6 +6,9 @@ public class BlockCollisionDetecter : MonoBehaviour
 	public GameBoard gameBoardGO;
 
 	private GomokuGameLogic gameLogic;
+
+	private GameObject previewGO;
+
 		// Use this for initialization
 	void Start ()
 	{
@@ -31,7 +34,11 @@ public class BlockCollisionDetecter : MonoBehaviour
 					bool fightWithAI = gameLogic.fightWithAI;
 					if (!fightWithAI || (fightWithAI && gameLogic.gameState == GameState.White_move)) 
 					{
-						onTouchChange(hit.collider.gameObject);
+						if (previewGO != null) {
+							gameLogic.changePreviewToBlank(previewGO);
+						}
+						previewGO = hit.collider.gameObject;
+						gameLogic.changeToPreviewSpriteAtLocation(previewGO);
 					}
 				}
 			}
@@ -54,7 +61,11 @@ public class BlockCollisionDetecter : MonoBehaviour
 													bool fightWithAI = gameLogic.fightWithAI;
 													if (!fightWithAI || (fightWithAI && gameLogic.gameState == GameState.White_move)) 
 													{
-														onTouchChange(hit.collider.gameObject);
+														if (previewGO != null) {
+															gameLogic.changePreviewToBlank(previewGO);
+														}
+														previewGO = hit.collider.gameObject;
+														gameLogic.changeToPreviewSpriteAtLocation(previewGO);
 													}
 												}
 											}
@@ -65,7 +76,17 @@ public class BlockCollisionDetecter : MonoBehaviour
 				}
 				#endif
 		}
-	
+		
+	public void ConfirmPreviewChange() 
+	{
+		if (previewGO != null) {
+			onTouchChange(previewGO);
+			previewGO = null;
+		} else {
+			Debug.Log("PREVIEW GAME OBJECT IS NULL");
+		}
+	}
+
 		void onTouchChange (GameObject clickedGO)
 		{
 				if (gameBoardGO == null) {
