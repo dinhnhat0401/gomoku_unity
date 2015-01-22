@@ -7,6 +7,7 @@ public class GomokuGameLogic : MonoBehaviour
 	public Sprite white_block;
 	public Sprite black_block;	
 	public Sprite blank_block;
+	public Sprite preview_block;
 
 	public GameBoard _gameBoard;
 	public GameState gameState;
@@ -55,6 +56,17 @@ public class GomokuGameLogic : MonoBehaviour
 			moveObjectStack = new Stack();
 			movePositionStack = new Stack();
 		}
+
+	public void changeToPreviewSpriteAtLocation (GameObject clickedGO)
+	{
+		clickedGO.tag = "preview_block";	
+		clickedGO.GetComponent<SpriteRenderer> ().sprite = preview_block;
+	}
+
+	public void changePreviewToBlank (GameObject clickedGO) {
+		clickedGO.tag = "blank_block";
+		clickedGO.GetComponent<SpriteRenderer> ().sprite = blank_block;
+	}
 
 	public void changeBlockSpriteAtLocation (GameObject clickedGO, Point pos)
 	{
@@ -254,10 +266,10 @@ public class GomokuGameLogic : MonoBehaviour
 					_gameBoard.removeBlock (pos2);
 					
 					GameObject pop3 = moveObjectStack.Pop() as GameObject;
-					recentMoveWhite.transform.position = pop3.transform.position;
+					recentMoveBlack.transform.position = pop3.transform.position;
 					
 					GameObject pop4 = moveObjectStack.Peek() as GameObject;
-					recentMoveBlack.transform.position = pop4.transform.position;
+					recentMoveWhite.transform.position = pop4.transform.position;
 
 					moveObjectStack.Push(pop3);
 				}
