@@ -254,10 +254,10 @@ public class GomokuGameLogic : MonoBehaviour
 					_gameBoard.removeBlock (pos2);
 					
 					GameObject pop3 = moveObjectStack.Pop() as GameObject;
-					recentMoveWhite.transform.position = pop3.transform.position;
+					recentMoveBlack.transform.position = pop3.transform.position;
 					
 					GameObject pop4 = moveObjectStack.Peek() as GameObject;
-					recentMoveBlack.transform.position = pop4.transform.position;
+					recentMoveWhite.transform.position = pop4.transform.position;
 
 					moveObjectStack.Push(pop3);
 				}
